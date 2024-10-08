@@ -54,7 +54,7 @@ try:
             fh.write(os_vers_val + '\r\n')
             fh.write(os_usrs_val + '\r\n')
         except:
-            print "Error during write to file"
+            print("Error during write to file")
             fh.close()
 except:
     print('Error while opening file for write')
