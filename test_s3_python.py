@@ -14,10 +14,10 @@ meta_data = 'http://169.254.169.254/latest/meta-data'
 ec2InsDatafile = 'ec2InsDatafile'
 ec2_params = {
     'Instance ID': 'instance-id',
-    'Reservation ID': 'reservation-id'
+    'Reservation ID': 'reservation-id',
     'Public IP': 'public_ipv4',
     'Public Hostname': 'public_hostname',
-    'Private IP':'local-ipv4'
+    'Private IP':'local-ipv4',
     'Security Groups':'security-groups',
     'AMI ID': 'ami_id'
 }
@@ -67,6 +67,7 @@ try:
     s3.meta.client.head_bucket(Bucket=s3_bucket_name)
 
     with (ec2InsDatafile, 'r') as fh:
+        instance_id = ec2_params['Instance ID']
         s3_conn.put_object(
             Bucket=s3_bucket_name,
             Key='system_info' + requests.get(meta_data +'/' + instance_id) + '.txt',
