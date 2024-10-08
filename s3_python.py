@@ -65,8 +65,8 @@ except:
     print("Error while opening file for write")
 
 # Upload file to s3 storage
-s3_bucket_name = 'new-bucket-e05ab0e0'
-s3_conn = boto3.client('r4p17-role')
+s3_bucket_name = 's3://applicant-task/r4p17/'
+s3_conn = boto3.client('s3')
 
 try:
     s3_conn.head_bucket(Bucket=s3_bucket_name)
