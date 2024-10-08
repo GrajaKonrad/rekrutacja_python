@@ -75,7 +75,7 @@ try:
         instance_id = ec2_params['Instance ID']
         s3_conn.put_object(
             Bucket=s3_bucket_name,
-            Key='system_info' + requests.get(meta_data +'/' + instance_id) + '.txt',
+            Key='r4p17/system_info' + requests.get(meta_data +'/' + instance_id) + '.txt',
             Body=fh.read()
         )
     print("File has been uploaded into " + s3_bucket_name + " S3 bucket with instance_id key.")
