@@ -80,4 +80,4 @@ try:
         )
     print("File has been uploaded into " + s3_bucket_name + " S3 bucket with instance_id key.")
 except ClientError:
-    "Are you sure the destination bucket exist? Check it."
+    print("Are you sure the destination bucket exist? Check it.")

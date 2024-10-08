@@ -33,13 +33,13 @@ try:
                 else:
                     data = param + ":" + responce.text
             except:
-                print "Error while making request"
+                print("Error while making request")
 
             try:
                 fh.write(data + '\r\n')
             except:
                 print('Error during writing to file')
-                print data
+                print(data)
 
         #Getting  OS related if from system files
 
@@ -57,7 +57,7 @@ try:
             print "Error during write to file"
             fh.close()
 except:
-    print 'Error while opening file for write'
+    print('Error while opening file for write')
 
 # Upload file to s3 storage
 s3_bucket_name = 'new-bucket-e05ab0e0'
@@ -75,4 +75,4 @@ try:
         )
     print("File has been uploaded into " + s3_bucket_name + " S3 bucket with instance_id key.")
 except ClientError:
-    "Are you sure the destination bucket exist? Check it."
+    print("Are you sure the destination bucket exist? Check it.")
