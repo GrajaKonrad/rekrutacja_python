@@ -14,54 +14,55 @@ user_data = 'http://169.254.169.254/latest/user-data'
 meta_data = 'http://169.254.169.254/latest/meta-data'
 ec2InsDatafile = 'ec2InsDatafile'
 ec2_params = {
-    'Instance ID': 'i-aaabbb',
+    'Instance ID': 'instance-id',
     'Reservation ID': 'reservation-id',
-    'Public IP': '8.8.8.8',
-    'Public Hostname': 'public_hostname',
-    'Private IP':'192.168.0.1',
-    'Security Groups':'security-groups',
-    'AMI ID': 'ami_id'
+    'Public IP': 'public-ipv4',
+    'Public Hostname': 'public-hostname',
+    'Private IP': 'local-ipv4',
+    'Security Groups': 'security-groups',
+    'AMI ID': 'ami-id'
 }
 
 try:
-    fh = open(ec2InsDatafile, 'w')
-except:
+    with open(ec2InsDatafile, 'w') as fh:
+        for param, value in ec2_params.items():
+            responce: Response
+            responce = None
+            try:
+                responce = requests.get(meta_data +'/' + value)
+                if isinstance(responce.text, list):
+                    print(responce.text + ': is list')
+                    data = ' '.joint(responce.text)
+                else:
+                    data = param + ":"+ responce.text
+            except:
+                print("Error while making request")
+
+            try:
+                fh.write(data+'\r\n')
+            except:
+                print("Error during writing to file")
+                print(data)
+
+        #Getting  OS related if from system files
+
+        os_vers = "grep '^VERSION=' /etc/os-release |cut -d'=' -f2"
+        os_vers_val ='OS VERSION: '+ os.popen(os_vers).read().rstrip()
+
+        os_name = "grep '^NAME' /etc/os-release |cut -d'=' -f2"
+        os_name_val ='OS NAME: '+ os.popen(os_name).read().rstrip()
+        
+        os_usrs = "grep -E 'bash|sh' /etc/passwd |awk -F : '{print $1}|xargs echo  "
+        os_usrs_val = 'Login able users: '+ os.popen(os_usrs).read().rstrip()
+        try:
+            fh.write(os_name_val+'\r\n')
+            fh.write(os_vers_val+'\r\n')
+            fh.write(os_usrs_val+'\r\n')
+        except:
+            print("Error during write to file")
+            fh.close()
+except: 
     print("Error while opening file for write")
-
-for param, value in ec2_params.items():
-    responce: Response
-    responce = None
-    try:
-        responce = requests.get(meta_data +'/' + value)
-    except:
-        print("Error while making request")
-    if isinstance(responce.text, list):
-        print(responce.text + ': is list')
-        data = ' '.joint(responce.text)
-    else:
-        data = param +":"+responce.text
-    try:
-          fh.write(data+'\r\n')
-    except:
-        print("Error during writing to file")
-        print(data)
-
-#Getting  OS related if from system files
-
-os_vers = "grep '^VERSION=' /etc/os-release |cut -d'=' -f2"
-os_name = "grep '^NAME' /etc/os-release |cut -d'=' -f2"
-os_name_val ='OS NAME: '+ os.popen(os_name).read().rstrip()
-os_vers_val ='OS VERSION: '+ os.popen(os_vers).read().rstrip()
-os_usrs = "grep -E 'bash|sh' /etc/passwd |awk -F : '{print $1}|xargs echo  "
-os_usrs_val = 'Login able users: '+ os.popen(os_usrs).read().rstrip()
-try:
-    fh.write(os_name_val+'\r\n')
-    fh.write(os_vers_val+'\r\n')
-    fh.write(os_usrs_val+'\r\n')
-except:
-    print("Error during write to file")
-    fh.close()
-
 
 # Upload file to s3 storage
 s3_bucket_name = 'new-bucket-e05ab0e0'
@@ -70,7 +71,8 @@ s3_conn = boto3.client('s3')
 try:
     s3_conn.head_bucket(Bucket=s3_bucket_name)
 
-    with (ec2InsDatafile, 'r') as fh:
+    with open(ec2InsDatafile, 'r') as fh:
+        instance_id = ec2_params['Instance ID']
         s3_conn.put_object(
             Bucket=s3_bucket_name,
             Key='system_info' + requests.get(meta_data +'/' + instance_id) + '.txt',
