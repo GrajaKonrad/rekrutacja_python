@@ -66,7 +66,7 @@ except:
 
 # Upload file to s3 storage
 s3_bucket_name = 'new-bucket-e05ab0e0'
-s3_conn = boto3.client('s3')
+s3_conn = boto3.client('r4p17-role')
 
 try:
     s3_conn.head_bucket(Bucket=s3_bucket_name)
