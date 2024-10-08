@@ -65,7 +65,7 @@ except:
     print("Error while opening file for write")
 
 # Upload file to s3 storage
-s3_bucket_name = 'applicant-task/r4p17/'
+s3_bucket_name = 'applicant-task'
 s3_conn = boto3.client('s3')
 
 try:
