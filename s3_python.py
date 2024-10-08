@@ -49,10 +49,10 @@ try:
         os_vers = "grep '^VERSION=' /etc/os-release |cut -d'=' -f2"
         os_vers_val ='OS VERSION: '+ os.popen(os_vers).read().rstrip()
 
-        os_name = "grep '^NAME' /etc/os-release |cut -d'=' -f2"
+        os_name = "grep '^VERSION=' /etc/os-release |cut -d'=' -f2"
         os_name_val ='OS NAME: '+ os.popen(os_name).read().rstrip()
         
-        os_usrs = "grep -E 'bash|sh' /etc/passwd |awk -F : '{print $1}|xargs echo  "
+        os_usrs = "grep -E 'bash|sh' /etc/passwd |awk -F : '{print $1}' | xargs echo  "
         os_usrs_val = 'Login able users: '+ os.popen(os_usrs).read().rstrip()
         try:
             fh.write(os_name_val+'\r\n')

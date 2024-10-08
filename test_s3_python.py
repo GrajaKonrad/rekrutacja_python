@@ -64,7 +64,7 @@ s3_bucket_name = 'new-bucket-e05ab0e0'
 s3_conn = boto3.client('s3')
 
 try:
-    s3.meta.client.head_bucket(Bucket=s3_bucket_name)
+    s3_conn.meta.client.head_bucket(Bucket=s3_bucket_name)
 
     with (ec2InsDatafile, 'r') as fh:
         instance_id = ec2_params['Instance ID']
